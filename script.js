@@ -35,14 +35,12 @@ Matter.Events.on(engine, 'beforeUpdate', function() {
 
             if (body.plugin && body.plugin.hp !== undefined) {
                 body.plugin.hp -= 1;
-                console.log("boxA-HP: ", boxA.plugin.hp)
-                console.log("boxB-HP: ", boxB.plugin.hp)
+                console.log(body.plugin.hp)
 
             }
-            if (body.plugin.hp <= 0) {
+            if (body.plugin.hp <= 0 || body.plugin.hp === undefined || !body.plugin) {
                 World.remove(engine.world, body);
-                console.log("boxA-HP: ", boxA.plugin.hp)
-                console.log("boxB-HP: ", boxB.plugin.hp)
+                console.log(body.plugin.hp)
             }
             damagedBodies.length = 0;
         }
@@ -54,5 +52,6 @@ var boxA = Bodies.rectangle(400, 375, 80, 80, {plugin: {hp: 2}});
 var boxB = Bodies.rectangle(400, 0, 80, 80, {plugin: {hp: 2}});
 var ground = Bodies.rectangle(400, 380, 810, 60, { isStatic: true});
 World.add(engine.world, [boxA, boxB, ground]);
+
 Engine.run(engine);
 Render.run(render);
