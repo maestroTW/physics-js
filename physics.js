@@ -35,13 +35,23 @@ export function initPhysics() {
                 var body = damagedBodies[i];
 
                 if (body.plugin && body.plugin.hp !== undefined) {
-                    body.plugin.hp -= 1;
                     console.log(body.plugin.hp)
+                    body.plugin.hp -= 1;
 
                 }
                 if (body.plugin.hp <= 0 || !body.plugin.hp === undefined || !body.plugin) {
                     World.remove(engine.world, body);
                     console.log(body.plugin.hp)
+
+                    const bodySize = Math.max(body.bounds.max.x - body.bounds.min.x, body.bounds.max.y - body.bounds.min.y);
+                    const iterations = Math.floor(Math.random() * 7) + 2;
+                    for (let i = 0; i < iterations ; i++) {
+                        const offsetX = (Math.random() - 0.3) * bodySize * 2
+                        const offsetY = (Math.random() - 0.3) * bodySize * 2
+                        const sides = Math.max(3,Math.floor(Math.random() * 10) + 3);
+                        const radius = Math.max(5, bodySize * 0.25);
+                        World.add(engine.world, Bodies.polygon(body.position.x + offsetX, body.position.y + offsetY, sides, radius));
+                    }
                 }
                 damagedBodies.length = 0;
             }
