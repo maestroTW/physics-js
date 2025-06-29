@@ -39,7 +39,7 @@ export function initPhysics() {
                     console.log(body.plugin.hp)
 
                 }
-                if (body.plugin.hp <= 0 || body.plugin.hp === undefined || !body.plugin) {
+                if (body.plugin.hp <= 0 || !body.plugin.hp === undefined || !body.plugin) {
                     World.remove(engine.world, body);
                     console.log(body.plugin.hp)
                 }
