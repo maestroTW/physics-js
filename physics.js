@@ -37,7 +37,6 @@ export function initPhysics() {
                 if (body.plugin && body.plugin.hp !== undefined) {
                     console.log(body.plugin.hp)
                     body.plugin.hp -= 1;
-
                 }
                 if (body.plugin.hp <= 0 || !body.plugin.hp === undefined || !body.plugin) {
                     World.remove(engine.world, body);
@@ -50,7 +49,8 @@ export function initPhysics() {
                         const offsetY = (Math.random() - 0.3) * bodySize * 2
                         const sides = Math.max(3,Math.floor(Math.random() * 10) + 3);
                         const radius = Math.max(5, bodySize * 0.25);
-                        World.add(engine.world, Bodies.polygon(body.position.x + offsetX, body.position.y + offsetY, sides, radius));
+                        const color = body.render.fillStyle;
+                        World.add(engine.world, Bodies.polygon(body.position.x + offsetX, body.position.y + offsetY, sides, radius, {render: {fillStyle: color}}));
                     }
                 }
                 damagedBodies.length = 0;
