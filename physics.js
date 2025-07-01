@@ -19,11 +19,11 @@ export function initPhysics() {
     var damagedBodies = [];
     Matter.Events.on(engine, 'collisionStart', function(event) {
         var pairs = event.pairs;
-
+//  velocity > 4 + collision = damage
         for (var i = 0; i < pairs.length; i++) {
             var pair = pairs[i];
             if ((!pair.bodyA.isStatic || !pair.bodyB.isStatic) &&
-                Math.max(pair.bodyA.velocity.x, pair.bodyA.velocity.y, pair.bodyB.velocity.x, pair.bodyB.velocity.y) > 1.2) {
+                Math.max(pair.bodyA.velocity.x, pair.bodyA.velocity.y, pair.bodyB.velocity.x, pair.bodyB.velocity.y) > 4) {
                 damagedBodies.push(pair.bodyA);
                 damagedBodies.push(pair.bodyB);
             }
@@ -38,7 +38,7 @@ export function initPhysics() {
                 //  damage
                 if (body.plugin && body.plugin.hp !== undefined && body.plugin.hp >= 1) {
                     body.plugin.hp -= 1;
-                    console.log(body.plugin.name,'velocity', body.velocity.y)
+                    console.log(body.plugin.name,'velocity', Math.max(body.velocity.x, body.velocity.y))
                     console.log(body.plugin.name,'hp', body.plugin.hp)
 
                 }
@@ -46,17 +46,18 @@ export function initPhysics() {
                 if (body.plugin.hp <= 0 || !body.plugin.hp === undefined || !body.plugin)
                 {
                     World.remove(engine.world, body);
-                    console.log(body.plugin.name,'velocity', body.velocity.y)
+                    console.log(body.plugin.name,'velocity', Math.max(body.velocity.x, body.velocity.y))
                     console.log(body.plugin.name, 'removed')
 
                     const bodySize = Math.max(body.bounds.max.x - body.bounds.min.x, body.bounds.max.y - body.bounds.min.y);
-                    const iterations = Math.floor(Math.random() * 3) + 2; //    2 to 4
-                    for (let i = 0; i < iterations; i++)
-                    {
-                        const sides = Math.max(3, Math.floor(Math.random() * 10) + 3);
-                        const color = body.render.fillStyle;
-                        const radius = Math.max(5, bodySize * (0.1 + Math.random() * 0.15)); // part max size 0.25
-                        World.add(engine.world, Bodies.polygon(body.position.x, body.position.y, sides, radius, {render: {fillStyle: color}}));
+                    if(bodySize > 40) {
+                        const iterations = Math.floor(Math.random() * 3) + 2; //    2 to 4
+                        for (let i = 0; i < iterations; i++) {
+                            const sides = Math.max(3, Math.floor(Math.random() * 10) + 3);
+                            const color = body.render.fillStyle;
+                            const radius = Math.max(5, bodySize * (0.1 + Math.random() * 0.15)); // part max size 0.25 * bodySize
+                            World.add(engine.world, Bodies.polygon(body.position.x, body.position.y, sides, radius, {render: {fillStyle: color}, plugin:{hp: 1}}));
+                        }
                     }
                 }
                 damagedBodies.length = 0;
