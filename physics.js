@@ -17,6 +17,7 @@ export function initPhysics() {
     });
 //  initialization damagedBodies
     var damagedBodies = [];
+    var forceBodies = [];
     Matter.Events.on(engine, 'collisionStart', function(event) {
         var pairs = event.pairs;
 //  velocity > 4 + collision = damage
@@ -26,6 +27,8 @@ export function initPhysics() {
                 Math.abs(Math.max(pair.bodyA.velocity.x, pair.bodyA.velocity.y, pair.bodyB.velocity.x, pair.bodyB.velocity.y)) > 5) {
                 damagedBodies.push(pair.bodyA);
                 damagedBodies.push(pair.bodyB);
+                forceBodies.push(pair.bodyA.plugin.force ?? 1)
+                forceBodies.push(pair.bodyA.plugin.force ?? 1)
             }
         }
     });
@@ -35,11 +38,12 @@ export function initPhysics() {
             for (var i = 0; i < damagedBodies.length; i++)
             {
                 var body = damagedBodies[i];
+                var force = forceBodies[i];
 
                 const bodyHP = body.plugin.hp
                 //  damage
                 if (body.plugin && body.plugin.hp !== undefined && body.plugin.hp >= 1) {
-                    body.plugin.hp -= (body.plugin?.force ?? 1);
+                    body.plugin.hp -= force;
                     console.log(body.plugin.name,'velocity', Math.max(body.velocity.x, body.velocity.y))
                     console.log(body.plugin.name,'hp', body.plugin.hp)
                 }
